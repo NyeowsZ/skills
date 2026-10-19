@@ -17,7 +17,8 @@ Usage: node extend-skill.js [options]
 Add Component Recipe:
   --add-component <name>       Name of new component (e.g. accordion, badge, drawer)
   --description <text>         Brief functional description
-  --markup <html-file-path>    Optional path to HTML file containing canonical snippet
+  --markup <html-file-path>    Optional path to HTML file containing canonical snippet (alias: --file)
+  --file <html-file-path>      Alias for --markup
 
 Add Semantic Token:
   --add-token <name>           Name of token (e.g. warning-subtle, brand-glow)
@@ -69,6 +70,7 @@ This document defines the canonical specification for the **${name}** component.
 
 ## 3. Canonical Recipe (Copy-Paste Target)
 
+### Default Variant
 \`\`\`html
 ${canonicalSnippet}
 \`\`\`
@@ -140,6 +142,7 @@ function main() {
   const compIdx = args.indexOf('--add-component');
   const descIdx = args.indexOf('--description');
   const markupIdx = args.indexOf('--markup');
+  const fileIdx = args.indexOf('--file');
 
   const tokenIdx = args.indexOf('--add-token');
   const lightIdx = args.indexOf('--value-light');
@@ -149,7 +152,7 @@ function main() {
   if (compIdx !== -1) {
     const name = args[compIdx + 1];
     const desc = descIdx !== -1 ? args[descIdx + 1] : '';
-    const markup = markupIdx !== -1 ? args[markupIdx + 1] : null;
+    const markup = markupIdx !== -1 ? args[markupIdx + 1] : (fileIdx !== -1 ? args[fileIdx + 1] : null);
     addComponent(name, desc, markup);
   } else if (tokenIdx !== -1) {
     const token = args[tokenIdx + 1];

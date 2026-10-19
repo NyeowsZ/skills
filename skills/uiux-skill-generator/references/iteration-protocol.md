@@ -21,12 +21,12 @@ Every generated skill bundles the non-interactive script `scripts/extend-skill.j
 ```bash
 node scripts/extend-skill.js --add-component "accordion" \
   --description "Collapsible disclosure item with animated chevron and keyboard toggle" \
-  --file "references/accordion.md"
+  --markup "path/to/accordion.html"
 ```
 This command:
 1. Creates `references/accordion.md` with the standard blueprint structure (variants, accessibility checklist, markup recipe).
 2. Updates `SKILL.md` to register the new reference in the component catalog.
-3. Updates `scripts/scaffold-component.js` so `node scripts/scaffold-component.js --type accordion` works instantly.
+3. Automatically enables `node scripts/scaffold-component.js --type accordion` via dynamic reference discovery.
 
 ### Registering a New Semantic Token
 ```bash
