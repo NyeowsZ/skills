@@ -28,6 +28,8 @@ A deterministic, procedural UI/UX skill enforcing the **{{ARCHETYPE}}** design s
 2. **ZERO ARBITRARY VALUES**: Never use arbitrary hex codes (`bg-[#...]`) or unmapped Tailwind color palettes (`bg-blue-500`). Use predefined semantic tokens (`bg-primary`, `bg-surface`, `text-foreground`, `border-border`).
 3. **MANDATORY VERIFICATION**: After creating or modifying any UI file, run `node scripts/verify-ui-compliance.js <path>` to deterministically verify compliance.
 4. **NO EMOJIS IN UI**: Never use emojis as decorative or icon elements. Use clean SVG icons or semantic badges.
+5. **APPLICATION SHELL FIRST (NO LANDING PAGE DRIFT)**: For dashboards, admin panels, and SaaS tools, ALWAYS build within an application shell (`<aside>` sidebar navigation + clean main workspace). Never default to marketing hero banners, giant splash headlines, or single-page marketing scroll containers for functional tasks.
+6. **PROGRESSIVE DISCLOSURE (PoLP)**: Complex mutations (entity creation, credential changes) and deep detail inspections must use **Modals or Slide-Over Drawers** from `references/feedback-dialogs.md` rather than cluttering page surfaces.
 
 ---
 
@@ -43,7 +45,7 @@ Before writing any markup, consult the corresponding canonical recipe:
 | **Cards & Panels** | [cards.md](./references/cards.md) | KPI metric cards, action cards, containers |
 | **Navigation & Header** | [navbar.md](./references/navbar.md) | App header, breadcrumbs, theme switcher |
 | **Layouts & Tables** | [layouts-tables.md](./references/layouts-tables.md) | App shell, sidebar, responsive data tables |
-| **Modals & Dialogs** | [feedback-dialogs.md](./references/feedback-dialogs.md) | Accessible dialogs, status banners, empty states |
+| **Modals & Drawers** | [feedback-dialogs.md](./references/feedback-dialogs.md) | Form modals, slide-over sheets, alerts, empty states |
 
 ---
 
@@ -53,7 +55,7 @@ Execute these scripts directly in the terminal to scaffold and verify UI code:
 
 - **Extract Component Boilerplate**:
   ```bash
-  node scripts/scaffold-component.js --type <card|button|navbar|input|modal|table>
+  node scripts/scaffold-component.js --type <card|button|navbar|input|modal|drawer|table>
   ```
 - **Audit WCAG Contrast**:
   ```bash
@@ -70,21 +72,28 @@ Execute these scripts directly in the terminal to scaffold and verify UI code:
 
 ---
 
-## Procedural Workflow (4 Steps)
+## Procedural Workflow (5 Steps)
+
+### Step 0: Layout Archetype Gate & Scope
+Classify the view before writing markup:
+- **Application Tool / Dashboard (DEFAULT)**: Must use an application shell (`<aside>` sidebar navigation, view router, structured metric/table grid from `references/layouts-tables.md`). Entity mutations and inspections must use **Modals or Drawer Sheets** (`references/feedback-dialogs.md`). Marketing hero banners are **strictly forbidden**.
+- **Marketing / Content Page**: Dedicated landing page, documentation, or public announcement. Uses hero section, feature grid, and footer CTA.
 
 ### Step 1: Identify Required Components
-Scan the user prompt or feature requirements and identify the necessary components (e.g. Navigation Header + Metric Cards + Data Table). Open the corresponding reference file(s) in `references/`.
+Scan requirements and identify components (e.g. Sidebar + Metric Cards + Data Table + Creation Modal). Open the corresponding reference file(s) in `references/`.
 
 ### Step 2: Extract Canonical Recipes
-Use the scaffolding script to retrieve the verified markup:
+Use the scaffolding script to retrieve verified markup:
 ```bash
 node scripts/scaffold-component.js --type card --variant metric
+node scripts/scaffold-component.js --type modal --variant form
+node scripts/scaffold-component.js --type drawer --variant detail
 ```
 Alternatively, copy the exact code block from `references/<component>.md`.
 
 ### Step 3: Assemble & Wire Up Interface
 Integrate the component into the page layout:
-- Ensure surfaces follow the 60-30-10 rule: Canvas (`bg-background`), Cards (`bg-surface`), Elevated panels (`bg-surface-elevated`).
+- Ensure surfaces follow the 60-30-10 rule: Canvas (`bg-background`), Cards (`bg-surface`), Elevated panels/Modals (`bg-surface-elevated`).
 - Use `font-sans` for text and `font-mono` for metrics and numbers.
 - Maintain accessible markup: ensure all `<button>` elements have text or `aria-label`, `<input>` elements have labels, and `<img>` elements have `alt`.
 

@@ -35,7 +35,7 @@ All generated UI/UX skills must be named descriptively following the pattern:
 - **Vibe**: Pure readability, whitespace-driven, stark typographic structure (Stripe docs, Substack).
 - **Dominant (60%)**: Background `#fafafa` (Light) / `#0a0a0a` (Dark), Surface `#ffffff` (Light) / `#141414` (Dark).
 - **Secondary (30%)**: Borders `#e5e5e5` (Light) / `#262626` (Dark), Muted `#737373`.
-- **Accent (10%)**: Crisp Blue `#0284c7` or Neutral Slate `#0f172a`.
+- **Accent (10%)**: Crisp Blue `#0369a1` or Neutral Slate `#0f172a`.
 - **Typography**: Inter + JetBrains Mono for code. Balanced leading (`leading-relaxed`).
 - **Corner Radii**: Subdued `rounded-sm` (4px) to `rounded-md` (6px).
 
@@ -43,7 +43,7 @@ All generated UI/UX skills must be named descriptively following the pattern:
 - **Default Skill Name**: `cyber-dark-fintech-analytics-skill`
 - **Vibe**: Deep space canvas, subtle glow accents, intense data density (Linear, Datadog).
 - **Dominant (60%)**: Canvas `#08090a`, Surface `#0f1012`.
-- **Secondary (30%)**: Surface Elevated `#17181c`, Borders `#22242a`, Muted Text `#8b949e`.
+- **Secondary (30%)**: Surface Elevated `#17181c`, Borders `#cbd5e1` (Light) / `#22242a` (Dark), Muted Text `#8b949e`.
 - **Accent (10%)**: Electric Indigo `#5e6ad2` or Cyan `#00e5ff`.
 - **Typography**: Geist Sans or Outfit. Monospace numerals for metric cards.
 - **Corner Radii**: Precision `rounded-md` (6px), micro borders (`border border-border/60`).
@@ -73,7 +73,7 @@ All generated UI/UX skills must be named descriptively following the pattern:
 | Archetype Slug | Suggested Domain | Primary Accent | Base Font | Default Framework |
 | :--- | :--- | :--- | :--- | :--- |
 | `monochrome-saas` | SaaS, DevTools | `#18181b` / `#ffffff` | Inter / Geist | Tailwind v4 |
-| `ultra-minimal` | Documentation, Blogs | `#0284c7` | Inter | Tailwind v4 / CSS |
+| `ultra-minimal` | Documentation, Blogs | `#0369a1` | Inter | Tailwind v4 / CSS |
 | `cyber-dark` | Analytics, Crypto | `#5e6ad2` | Geist / Mono | Tailwind v4 |
 | `warm-editorial` | Magazines, Portfolios| `#c2410c` | Serif + Sans | Tailwind v4 |
 | `enterprise-portal`| Admin CRM, ERP | `#2563eb` | Inter | Tailwind v4 |

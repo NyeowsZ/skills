@@ -29,56 +29,89 @@ function getReferencesDir() {
 
 function parseRecipes() {
   const refDir = getReferencesDir();
-  const files = [
-    { type: 'button', file: 'buttons-inputs.md', defaultVariant: 'primary' },
-    { type: 'input', file: 'buttons-inputs.md', defaultVariant: 'standard' },
-    { type: 'card', file: 'cards.md', defaultVariant: 'metric' },
-    { type: 'navbar', file: 'navbar.md', defaultVariant: 'header' },
-    { type: 'layout', file: 'layouts-tables.md', defaultVariant: 'shell' },
-    { type: 'table', file: 'layouts-tables.md', defaultVariant: 'responsive' },
-    { type: 'modal', file: 'feedback-dialogs.md', defaultVariant: 'dialog' },
-    { type: 'alert', file: 'feedback-dialogs.md', defaultVariant: 'success' },
-    { type: 'typography', file: 'typography.md', defaultVariant: 'hero' }
-  ];
+  if (!fs.existsSync(refDir)) return {};
 
   const catalog = {};
 
-  for (const item of files) {
-    const fullPath = path.join(refDir, item.file);
-    if (!fs.existsSync(fullPath)) continue;
+  function ensureType(type, sourceFile) {
+    if (!catalog[type]) {
+      catalog[type] = { sourceFile, variants: {} };
+    }
+  }
 
+  const allFiles = fs.readdirSync(refDir).filter(f => f.endsWith('.md'));
+
+  for (const file of allFiles) {
+    if (file === 'semantic-tokens.md') continue;
+
+    const fullPath = path.join(refDir, file);
     const content = fs.readFileSync(fullPath, 'utf8');
     const sections = content.split(/^###? /m);
-
-    catalog[item.type] = {
-      sourceFile: item.file,
-      variants: {}
-    };
 
     for (const sec of sections) {
       const lines = sec.trim().split('\n');
       const title = lines[0].toLowerCase();
       const codeMatch = sec.match(/```html\s*([\s\S]*?)\s*```/);
-      if (codeMatch) {
-        let key = title.replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-        if (key.includes('primary')) key = 'primary';
-        else if (key.includes('secondary') || key.includes('outline')) key = 'secondary';
-        else if (key.includes('ghost')) key = 'ghost';
-        else if (key.includes('destructive')) key = 'destructive';
-        else if (key.includes('icon')) key = 'icon';
-        else if (key.includes('metric') || key.includes('kpi')) key = 'metric';
-        else if (key.includes('action')) key = 'action';
-        else if (key.includes('container') || key.includes('elevated')) key = 'container';
-        else if (key.includes('header') || key.includes('desktop')) key = 'header';
-        else if (key.includes('breadcrumb')) key = 'breadcrumb';
-        else if (key.includes('shell') || key.includes('sidebar')) key = 'shell';
-        else if (key.includes('table')) key = 'responsive';
-        else if (key.includes('modal') || key.includes('dialog')) key = 'dialog';
-        else if (key.includes('success')) key = 'success';
-        else if (key.includes('warning')) key = 'warning';
-        else if (key.includes('empty')) key = 'empty';
+      if (!codeMatch) continue;
 
-        catalog[item.type].variants[key] = codeMatch[1].trim();
+      const snippet = codeMatch[1].trim();
+      let key = title.replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+
+      if (file === 'buttons-inputs.md') {
+        if (title.includes('input') || title.includes('select') || title.includes('text field')) {
+          ensureType('input', file);
+          let v = key.includes('select') ? 'select' : (key.includes('error') ? 'error' : 'standard');
+          catalog.input.variants[v] = snippet;
+        } else {
+          ensureType('button', file);
+          let v = key.includes('secondary') || key.includes('outline') ? 'secondary'
+            : (key.includes('ghost') ? 'ghost'
+            : (key.includes('destructive') ? 'destructive'
+            : (key.includes('icon') ? 'icon' : 'primary')));
+          catalog.button.variants[v] = snippet;
+        }
+      } else if (file === 'cards.md') {
+        ensureType('card', file);
+        let v = key.includes('action') ? 'action' : (key.includes('elevated') || key.includes('container') ? 'container' : 'metric');
+        catalog.card.variants[v] = snippet;
+      } else if (file === 'navbar.md') {
+        ensureType('navbar', file);
+        let v = key.includes('breadcrumb') ? 'breadcrumb' : (key.includes('drawer') || key.includes('mobile') ? 'mobile' : 'header');
+        catalog.navbar.variants[v] = snippet;
+      } else if (file === 'layouts-tables.md') {
+        if (title.includes('table')) {
+          ensureType('table', file);
+          catalog.table.variants['responsive'] = snippet;
+        } else {
+          ensureType('layout', file);
+          catalog.layout.variants['shell'] = snippet;
+        }
+      } else if (file === 'feedback-dialogs.md') {
+        if (title.includes('drawer') || title.includes('slide-over')) {
+          ensureType('drawer', file);
+          catalog.drawer.variants['detail'] = snippet;
+        } else if (title.includes('form') || title.includes('creation') || title.includes('entity')) {
+          ensureType('modal', file);
+          catalog.modal.variants['form'] = snippet;
+        } else if (title.includes('modal') || title.includes('dialog')) {
+          ensureType('modal', file);
+          catalog.modal.variants['dialog'] = snippet;
+        } else if (title.includes('empty')) {
+          ensureType('empty', file);
+          catalog.empty.variants['default'] = snippet;
+        } else if (title.includes('status') || title.includes('notification') || title.includes('alert') || title.includes('success') || title.includes('warning')) {
+          ensureType('alert', file);
+          let v = key.includes('warning') ? 'warning' : 'success';
+          catalog.alert.variants[v] = snippet;
+        }
+      } else if (file === 'typography.md') {
+        ensureType('typography', file);
+        catalog.typography.variants['hero'] = snippet;
+      } else {
+        const customType = path.basename(file, '.md').toLowerCase();
+        ensureType(customType, file);
+        const variantName = key.length > 0 ? key : 'default';
+        catalog[customType].variants[variantName] = snippet;
       }
     }
   }

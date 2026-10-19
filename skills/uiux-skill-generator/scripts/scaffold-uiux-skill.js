@@ -70,7 +70,7 @@ const ARCHETYPES = {
     borderDark: '#262626',
     borderSubtleLight: '#f0f0f0',
     borderSubtleDark: '#1c1c1c',
-    primaryLight: '#0284c7',
+    primaryLight: '#0369a1',
     primaryDark: '#38bdf8',
     primaryFgLight: '#ffffff',
     primaryFgDark: '#082f49',
@@ -91,7 +91,7 @@ const ARCHETYPES = {
     textDark: '#f1f5f9',
     textMutedLight: '#64748b',
     textMutedDark: '#8b949e',
-    borderLight: '#e2e8f0',
+    borderLight: '#cbd5e1',
     borderDark: '#22242a',
     borderSubtleLight: '#f1f5f9',
     borderSubtleDark: '#16181e',
@@ -121,7 +121,7 @@ const ARCHETYPES = {
     borderSubtleLight: '#f0e9df',
     borderSubtleDark: '#2f2b28',
     primaryLight: '#c2410c',
-    primaryDark: '#ea580c',
+    primaryDark: '#c2410c',
     primaryFgLight: '#ffffff',
     primaryFgDark: '#ffffff',
     mutedLight: '#ede5da',
@@ -146,7 +146,7 @@ const ARCHETYPES = {
     borderSubtleLight: '#e2e8f0',
     borderSubtleDark: '#1e293b',
     primaryLight: '#2563eb',
-    primaryDark: '#3b82f6',
+    primaryDark: '#2563eb',
     primaryFgLight: '#ffffff',
     primaryFgDark: '#ffffff',
     mutedLight: '#f1f5f9',
@@ -196,9 +196,18 @@ function getLuminance(rgb) {
   return 0.2126 * sRGBtoLinear(rgb.r) + 0.7152 * sRGBtoLinear(rgb.g) + 0.0722 * sRGBtoLinear(rgb.b);
 }
 
+function getContrastRatio(hex1, hex2) {
+  const lum1 = getLuminance(parseHex(hex1));
+  const lum2 = getLuminance(parseHex(hex2));
+  const brightest = Math.max(lum1, lum2);
+  const darkest = Math.min(lum1, lum2);
+  return (brightest + 0.05) / (darkest + 0.05);
+}
+
 function getBestForeground(hex) {
-  const lum = getLuminance(parseHex(hex));
-  return lum > 0.4 ? '#09090b' : '#fafafa';
+  const whiteContrast = getContrastRatio(hex, '#ffffff');
+  const darkContrast = getContrastRatio(hex, '#09090b');
+  return darkContrast >= whiteContrast ? '#09090b' : '#fafafa';
 }
 
   const brandIdx = args.indexOf('--brand-color');

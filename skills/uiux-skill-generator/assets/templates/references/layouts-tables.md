@@ -123,3 +123,5 @@ Dense, accessible table with status badges and action triggers.
 
 1. **NO Missing Table Semantics**: Always declare `<th scope="col">` on table headers for screen-reader navigability.
 2. **Numeric Alignment**: Numeric values (latencies, counts, financial currencies) must be aligned to the right (`text-right font-mono`).
+3. **NO Marketing Heroes in Dashboards**: Never render marketing slogans, giant splash headlines, or promotional callouts inside an application shell. Application shells are workspace environments focused on operational density.
+4. **App Shell Routing vs Single-Page Landing**: Application views must be organized into distinct functional routes/views (e.g. Overview, Services, Settings, Logs). Do not flatten multi-feature tools into a single continuous marketing landing page scroll.
